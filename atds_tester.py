@@ -227,8 +227,17 @@ def main():
     except:
         print("Test failed: is_empty() method unavailable")
 
-    print(str(tests_passed) + "/20 tests passed on the Stack, Queue, and Deque classes") 
-    
+#################################################################
+
+    print("Testing the Node class")
+    try:
+        n = Node("data1")
+        tests_passed += 1
+        print("Test passed: node created")
+    except:
+        print("Test failed: couldn't initialize node")
+
+    print(str(tests_passed) + "/21 tests passed on the Stack, Queue, and Deque classes") 
 
 if __name__ == "__main__":
     main()

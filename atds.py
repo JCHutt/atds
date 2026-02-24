@@ -116,6 +116,29 @@ class Deque(object):
                 string_rep += ","
         return string_rep
 
+class Node(object):
+    """Defines a node."""
+    
+    def __init__(self,data):
+        """Initializes the node."""
+        self.data = data
+        self.next = None
+
+    def get_data(self):
+        return self.data
+    
+    def get_next(self):
+        return self.next
+    
+    def set_data(self,new_data):
+        self.data = new_data
+    
+    def set_next(self,new_next):
+        self.data = new_next
+
+    def __repr__(self):
+        return "Node[data=" + str(self.data) + ",next=" + str(self.next) + "]"
+
 def main():
     pass
 
