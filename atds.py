@@ -177,6 +177,76 @@ class UnorderedList(object):
                 current = current.get_next()
         return # default
 
+    def search(self,item):
+        if item == self.head.get_data():
+            return True
+        current = self.head.get_next()
+        while current.get_next() != None:
+            if item == current.get_data():
+                return True
+            else:
+                current = current.get_next()
+        return False
+    
+    def append(self,item):
+        new_node = Node(item)
+        if self.head == None:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.get_next() != None:
+                current = current.get_next()
+            current.set_next(new_node)
+
+    def index(self,item):
+        current = self.head
+        count = 0
+        while current.get_next() != None:
+            if item == current.get_data():
+                return count
+            else:
+                current = current.get_next()
+                count += 1
+        return count
+
+    def insert(self,pos,item):
+        new_node = Node(item)
+        if pos == 0:
+            new_node.set_next(self.head)
+            self.head = new_node
+        else:
+            count = 0
+            current = self.head
+            while count < pos-1:
+                current = current.get_next()
+                count += 1
+            new_node.set_next(current.get_next())
+            current.set_next(new_node)
+    
+    def pop(self, pos = -1):
+        if pos == -1:
+            previous = None
+            current = self.head
+            while current.get_next() != None:
+                previous = current
+                current = current.get_next()
+            previous.set_next(None)
+            return current
+        elif pos == 0:
+            to_remove = self.head
+            self.head = self.head.get_next()
+            return to_remove
+        else:
+            previous = None
+            current = self.head
+            count = 0
+            while count < pos:
+                previous = current
+                current = current.get_next()
+                count += 1
+            previous.set_next(current.get_next())
+            return current
+    
 
     def __repr__(self):
         """Creates a representation of the list suitable for printing, debugging."""
