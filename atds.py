@@ -261,6 +261,30 @@ class UnorderedList(object):
         """
         result = result + "]"
         return result
+    
+class ULStack(object):
+    """Defines a Stack with UnorderedLists."""
+    
+    def __init__(self):
+        """Initializes the ULStack"""
+        self.list = UnorderedList()
+
+    def push(self, item):
+        self.list.append(item)
+
+    def pop(self):
+        return self.list.pop()
+    
+    def peek(self):
+        current = self.list.pop()
+        self.list.append(current)
+        return current
+    
+    def size(self):
+        return self.list.length()
+    
+    def is_empty(self):
+        return self.list.is_empty()
 
 
 def main():
