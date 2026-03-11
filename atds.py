@@ -32,6 +32,13 @@ class Stack(object):
 
     def is_empty(self):
         return self.size() == 0
+    
+    def __repr__(self):
+        result = "Stack["
+        while len(self.list) > 0:
+            result += str(self.list[-1]) + ","
+        result = result + "]"
+        return result
 
 
 class Queue(object):
@@ -224,13 +231,18 @@ class UnorderedList(object):
             current.set_next(new_node)
     
     def pop(self, pos = -1):
-        if pos == -1:
+        if self.head == None:
+            return
+        elif pos == -1:
             previous = None
             current = self.head
             while current.get_next() != None:
                 previous = current
                 current = current.get_next()
-            previous.set_next(None)
+            if previous == None:
+                self.head = None
+            else:
+                previous.set_next(None)
             return current
         elif pos == 0:
             to_remove = self.head
@@ -270,14 +282,14 @@ class ULStack(object):
         self.list = UnorderedList()
 
     def push(self, item):
-        self.list.append(item)
+        self.list.insert(0,item)
 
     def pop(self):
-        return self.list.pop()
+        return self.list.pop(0)
     
     def peek(self):
-        current = self.list.pop()
-        self.list.append(current)
+        current = self.list.pop(0)
+        self.list.insert(0,current)
         return current
     
     def size(self):
