@@ -282,25 +282,39 @@ class LinearSearcher(object):
                 return pos
         return None
             
-
+class BinarySearcher(object):
+    """Performs a binary search on a list of ordered numbers"""
+    def search(nums,target):
+        lower = 0
+        higher = len(nums)
+        while (higher-lower) > 0:
+            mid = (higher+lower) // 2
+            if nums[mid] == target:
+                return mid
+            elif target > nums[mid]:
+                lower = mid+1
+            else:
+                higher = mid-1
+        if ((higher+lower) // 2) >= len(nums):
+            return None
+        elif nums[(higher+lower) // 2] == target: 
+            return (higher+lower) // 2
+        else:
+            return None
         
 
 class BinarySearcherRecursive(object):
     """Performs a recursive binary search on an ordered list of numbers"""
-    def __init__(self):
-        pass
-
-    def search(self,nums,target):
-        if len(nums) == 0:
+    def search(nums: list,target: int,lower: int, upper: int):
+        if lower > upper or upper < lower or lower > len(nums)-1 or upper < 0:
             return None
-        mid = len(nums) // 2
+        mid = (upper + lower) // 2
         if target == nums[mid]:
             return mid
         elif target > nums[mid]:
-            self.search(self,nums[mid+1:],target)
+            return BinarySearcherRecursive.search(nums,target,mid+1,upper)
         else:
-            self.search(self,nums[:mid],target)
-        return None
+            return BinarySearcherRecursive.search(nums,target,lower,mid-1)
 
 
 class ULStack(object):
@@ -326,13 +340,182 @@ class ULStack(object):
     
     def is_empty(self):
         return self.list.is_empty()
+    
+class HashTable(object):
+    """Initializes the Hash Table"""
+
+    def __init__(self, size):
+        """Constructs parallel lists for our hash table"""
+        self.keys = size * [None]
+        self.values = size * [None]
+        self.size = size
+        self.entries = 0
+    
+    def __repr__(self):
+        """Returns a string representation of the hash table"""
+        return "Keys: " + str(self.keys) + "\n" + "Values: " + str(self.values)
+    
+    def hash_function(self, key, m):
+        """Calculates a hashed index based on the modulo hash function """
+        return key % m
+
+    def put(self, key, value):
+        """Inserts a key and value into its corresponding spot in the hash table, including if collisions occur"""
+        hash = self.hash_function(key, self.size)
+        if self.entries / self.size != 1:
+            while self.keys[hash] != None and self.keys[hash] != key:
+                # scoot it over 
+                hash = (hash + 1) % self.size
+            if self.keys[hash] == None:
+                self.entries += 1
+            self.keys[hash] = key
+            self.values[hash] = value
+
+    def get(self,key):
+        """Finds and return the value in the hash table for a given key"""
+        hash = self.hash_function(key, self.size)
+        while self.keys[hash] != None and self.keys[hash] != key:
+            hash = (hash + 1) % self.size
+        return self.values[hash]
+    
+    def __len__(self):
+        """Returns the number of values in the hash table"""
+        return self.entries
 
 
 def main():
-    nums = [4,67,3,8,90]
-    print(LinearSearcher.search(nums,4))
-    nums2 = [3,4,5,7,20,57,300]
-    print(BinarySearcher.search(nums2,20))
+
+    #Testing Binary searching 
+    b = BinarySearcher()
+    nums = [3,5,7,20,26,90,100]
+    print(BinarySearcher.search(nums,7))
+    print(BinarySearcherRecursive.search(nums,101,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,1,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,3,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,5,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,7,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,20,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,26,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,90,0,len(nums)))
+    print(BinarySearcherRecursive.search(nums,100,0,len(nums)))
+
+
+    tests_passed = 0
+    print("\nTEST: Creating HashTable(11)...")
+    try:
+        h = HashTable(11)
+        tests_passed += 1
+        print("SUCCESS. Table created.")
+    except:
+        print("FAIL. Table not created.")
+    
+    print("\nTEST: Using put function to store key-value pairs in table...")
+    try:
+        h.put(1, "a")
+        h.put(6, "e")
+        h.put(10, "f")
+        h.put(12, "b")
+        h.put(23, "c")
+        tests_passed += 1
+        print("SUCCESS. .put() method called with 5 values.")
+    except:
+        print("FAIL. Problem with .put() method.")
+    
+    print("\nTEST: Trying to print the current state of table...")
+    try:
+        print(h)
+        print("Should look something like:")
+        print("Keys:   [None, 1, 12, 23, None, None, 6, None, None, None, 10]")
+        print("Values: [None, 'a', 'b', 'c', None, None, 'e', None, None, None, 'f']")
+        tests_passed += 1
+    except:
+        print("FAIL. Couldn't print using __str__ or __repr__")
+    
+    print("\nTEST: Using put() for a function at the end of the table to see if it wraps around...")
+    try:
+        h.put(21, "g")
+        if h.get(21) == "g":
+            print("SUCCESS. .put() correctly wrapped in the table.")
+            tests_passed += 1
+        else:
+            print("FAIL. .put() wraparound didn't work.")
+        print(h)
+    except:
+        print("FAIL. .put() didn't correctly wrap the table in linear probe.")
+    
+    print("\nTEST: Checking the number of values in the hash table...")
+    try:
+        l = len(h)
+        if l == 6:
+            print("SUCCESS. len(h) is 6.")
+            tests_passed += 1
+        else:
+            print("FAIL. len(h) should have been 5 -- solution is to write a __len__ method.")
+    except:
+        print("FAIL. Problem with len() method.")
+
+    print("\nTEST: Looking for original hash in table...")
+    try:
+        result = h.get(10)
+        tests_passed += 1
+        print("SUCCESS. .get() method called.")
+        if result == "f":
+            tests_passed += 1
+            print("SUCCESS. Correct value returned.")
+        else:
+            print("FAIL. Incorrect value returned.")
+    except:
+        print("FAIL. Problem with .get() method.")
+    
+    print("\nTEST: Replacing original hash {1, 'a'} in table with {1, 'z'}...")
+    try:
+        h.put(1, "z")
+        result = h.get(1)
+        if result == "z":
+            print("SUCCESS. New value put and found.")
+            tests_passed += 1
+        else:
+            print("FAIL. New value not put/found.")
+    except:
+        print("FAIL. Problem with replacing an old key.")
+    
+    print("\nTEST: Looking for key-collision in table...")
+    try:
+        result = h.get(23)
+        tests_passed += 1
+        print("SUCCESS. .get() method called.")
+        if result == "c":
+            tests_passed += 1
+            print("SUCCESS. Correct value returned.")
+        else:
+            print("FAIL. Incorrect value returned.")
+    except:
+        print("FAIL. Problem with .get() finding a key-collision.")
+    
+    print("\nTEST: Looking for a hash that's not in table..")
+    try:
+        result = h.get(14)
+        if result == None:
+            tests_passed += 1
+            print("SUCCESS. Non-existent value not found.")
+        else:
+            print("FAIL. Non-existent value found.")
+    except:
+        print("FAIL. Problem with .get() method.")
+    
+    print("\nTEST: Looking for collision not in table...")
+    try:
+        result = h.get(45)
+        if result == None:
+            tests_passed += 1
+            print("SUCCESS. Non-existent collision not found.")
+        else:
+            print("FAIL. Non-existent collision found.")
+    except:
+        print("FAIL. Problem with .get() method.")
+    
+    print("\nResults:")
+    print(tests_passed,"/ 12 tests passed")
 
 if __name__ == "__main__":
     main()
