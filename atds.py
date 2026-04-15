@@ -276,7 +276,10 @@ class UnorderedList(object):
     
 class LinearSearcher(object):  
     """Performs a linear search on a list of numbers (ordered or unordered)"""
-    def search(nums,target):
+    def __init__(self):
+        pass
+
+    def search(self,nums,target):
         for pos in range(len(nums)):
             if nums[pos] == target:
                 return pos
@@ -284,7 +287,10 @@ class LinearSearcher(object):
             
 class BinarySearcher(object):
     """Performs a binary search on a list of ordered numbers"""
-    def search(nums,target):
+    def __init__(self):
+        pass
+    
+    def search(self,nums,target):
         lower = 0
         higher = len(nums)
         while (higher-lower) > 0:
@@ -304,7 +310,10 @@ class BinarySearcher(object):
 
 class BinarySearcherRecursive(object):
     """Performs a recursive binary search on an ordered list of numbers"""
-    def search(nums: list,target: int,lower: int, upper: int):
+    def __init__(self):
+        pass
+    
+    def search(self, nums: list,target: int,lower: int, upper: int):
         if lower > upper or upper < lower or lower > len(nums)-1 or upper < 0:
             return None
         mid = (upper + lower) // 2
@@ -413,6 +422,61 @@ class BinaryTree(object):
 
 def main():
 
+    bs = BinarySearcher()
+    tests_passed = 0
+    tests = [
+        # (array, value_to_search, expected_result)
+        ([1, 2, 3, 4, 7, 9, 13, 14, 20], 7, 4),
+        ([1, 2, 3, 4, 7, 9, 13, 14, 20], 1, 0),
+        ([1, 2, 3, 4, 7, 9, 13, 14, 20], 20, 8),
+        ([1, 2, 3, 4, 7, 9, 13, 14, 20], -2, None),
+        ([1, 2, 3, 4, 7, 9, 13, 14, 20], 23, None),
+        ([1, 2, 3, 4, 7, 9, 13, 14, 20], 10, None),
+        ([4, 7, 9, 13, 14, 20], 9, 2),
+        ([4, 7, 9, 13, 14, 20], 13, 3),
+        ([4, 7, 9, 13, 14, 20], 20, 5),
+        ([4, 7, 9, 13, 14, 20], 2, None),
+        ([4, 7, 9, 13, 14, 20], 10, None),
+        ([4, 7, 9, 13, 14, 20], 22, None),
+    ]
+
+    for arr, value, expected in tests:
+        result = bs.search(arr, value)
+        if result == expected:
+            print(f"PASS: {value} in {arr} -> {result}")
+            tests_passed += 1
+        else:
+            print(f"FAIL: {value} in {arr} -> got {result}, expected {expected}")
+    print(f"Tests passed: {tests_passed}/{len(tests)}")
+
+    tests_passed = 0
+    ls = LinearSearcher()
+    print("Testing linear_search.py, search(lst, key) function")
+    print("LearnSearcher found")
+    tests_passed += 1
+    l = [20,3,13,4,7,9,7,14,1]
+    print("Initial list:", l)
+    print("Searching for item at beginning,", l[0], end='...')
+    if ls.search(l,l[0]) == 0:
+        print("passed")
+        tests_passed += 1
+    else:
+        print("failed")
+    print("Searching for 23 (not on list)", end='...')
+    if ls.search(l,23) == None:
+        print("passed")
+        tests_passed += 1
+    else:
+        print("failed. Should have indicated None")
+    print("Searching for item at end,", l[-1], end='...')
+    if ls.search(l,l[-1]) == len(l) - 1:
+        print("passed")
+        tests_passed += 1
+    else:
+        print("failed")
+    print("Tests passed:" + str(tests_passed) + "/4")  
+
+    """
     #Testing Binary searching 
     b = BinarySearcher()
     nums = [3,5,7,20,26,90,100]
@@ -434,7 +498,7 @@ def main():
     print(BinarySearcherRecursive.search(nums,26,0,len(nums)))
     print(BinarySearcherRecursive.search(nums,90,0,len(nums)))
     print(BinarySearcherRecursive.search(nums,100,0,len(nums)))
-
+    """
 
 if __name__ == "__main__":
     main()
